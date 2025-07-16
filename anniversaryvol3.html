@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kuromi Anniversary Quiz 💜</title>
+<style>
+  /* Use Helvetica for the whole page */
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #f7e8ff, #d6b8ff);
+    color: #3c1e5a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 30px 15px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Other styles remain the same, just simplified for brevity */
+  .container {
+    background: #fff0ff;
+    border-radius: 30px;
+    padding: 2.5rem 3rem;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 8px 24px rgba(213, 120, 255, 0.35);
+    text-align: center;
+    position: relative;
+  }
+
+  h1, h2 {
+    color: #b351c8;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 8px #d89fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  h1::before, h2::before {
+    content: url('https://i.imgur.com/FV1D1Oy.png');
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+  }
+
+  p, .question-text {
+    font-size: 1.25rem;
+    margin: 0.6rem 0 1.4rem;
+    color: #4a1a67;
+    line-height: 1.6;
+  }
+
+  .btn-container {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+  }
+
+  button.answer-btn {
+    background: linear-gradient(145deg, #d17fff, #a538e6);
+    color: #fff;
+    border: none;
+    padding: 1rem 2.8rem;
+    font-size: 1.25rem;
+    border-radius: 40px;
+    cursor: pointer;
+    box-shadow: 0 0 12px #bf47e6;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 150px;
+  }
+  button.answer-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #ff7fff, #d159ff);
+    box-shadow: 0 0 25px #d159ff;
+    transform: scale(1.05);
+  }
+  button.answer-btn:disabled {
+    background: #b995d9;
+    cursor: default;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .start-btn {
+    background: linear-gradient(145deg, #bf47e6, #a132c7);
+    color: #fff;
+    border: none;
+    padding: 1.2rem 3.5rem;
+    font-size: 1.6rem;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 0 22px #a132c7;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+  }
+  .start-btn:hover {
+    background: linear-gradient(145deg, #d159ff, #bf47e6);
+    box-shadow: 0 0 35px #d159ff;
+    transform: scale(1.12);
+  }
+
+  .kuromi-img {
+    position: absolute;
+    bottom: -55px;
+    right: -60px;
+    width: 150px;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.9;
+  }
+
+  #crying-kuromi {
+    width: 200px;
+    margin: 25px auto 0;
+    animation: shake 0.6s ease-in-out infinite alternate;
+    display: block;
+  }
+  .hidden {
+    display: none !important;
+  }
+  @keyframes shake {
+    0% { transform: translateX(0) rotate(0deg);}
+    100% { transform: translateX(8px) rotate(7deg);}
+  }
+
+  .love-letter {
+    background: #f9e6ff;
+    border: 3px solid #d159ff;
+    border-radius: 35px;
+    padding: 2.5rem 3rem;
+    color: #4a1a67;
+    font-style: italic;
+    font-size: 1.25rem;
+    white-space: pre-wrap;
+    line-height: 1.7;
+    box-shadow: 0 0 30px #d159ff80;
+    user-select: text;
+  }
+</style>
+</head>
+<body>
+
+<div id="welcome-screen" class="container">
+  <h1>HAPPY ANNIVERSARY BABEEEEEEEEE!!!!!</h1>
+  <p>💜 ROSHAN LOVESSSSS YOU TONNSSSSSSS! 💜</p>
+  <p>Today I’m gonna ask you some really interesting questions.<br>
+  If you get all of them right, you’ll get a special surprise.<br>
+  But if you don’t... well, you owe me something 😉💜</p>
+  <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
+  <img src="https://i.imgur.com/FV1D1Oy.png" alt="Kuromi" class="kuromi-img" />
+</div>
+
+<div id="quiz-container" class="container hidden">
+  <h2 id="question-number">Question 1</h2>
+  <p class="question-text" id="question-text">Question text</p>
+  <div class="btn-container">
+    <button class="answer-btn" id="answer-btn-1" onclick="handleAnswer(0)"></button>
+    <button class="answer-btn" id="answer-btn-2" onclick="handleAnswer(1)"></button>
+  </div>
+  <img id="crying-kuromi" class="hidden" src="https://media.giphy.com/media/YRrWM1I2Nx0Oo/giphy.gif" alt="Kuromi Crying" />
+</div>
+
+<div id="love-letter-screen" class="container hidden">
+  <h1>Love Letter 💌</h1>
+  <div class="love-letter" id="love-letter-text"></div>
+  <img src="https://i.imgur.com/FV1D1Oy.png" alt="Kuromi" class="kuromi-img" />
+</div>
+
+<script>
+  const questions = [
+    {
+      question: "When did we first meet?",
+      answers: ["Baishak 9, 2080", "Baishak 9, 2079"],
+    },
+    {
+      question: "What is my favorite snack?",
+      answers: ["Oreo", "Cheeseballs"],
+    },
+    {
+      question: "Do you love me?",
+      answers: ["Yes", "No"],
+    },
+    {
+      question: "Will you ever leave me?",
+      answers: ["No", "Maybe"],
+    },
+    {
+      question: "Will you suck it?",
+      answers: ["Yes", "No"],
+    },
+  ];
+
+  let currentQuestionIndex = 0;
+  let shuffledAnswers = [];
+
+  function startQuiz() {
+    document.getElementById('welcome-screen').classList.add('hidden');
+    document.getElementById('quiz-container').classList.remove('hidden');
+    currentQuestionIndex = 0;
+    showQuestion();
+  }
+
+  function shuffle(array) {
+    for(let i = array.length -1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i+1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function showQuestion() {
+    document.getElementById('crying-kuromi').classList.add('hidden');
+
+    const q = questions[currentQuestionIndex];
+    document.getElementById('question-number').textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+    document.getElementById('question-text').textContent = q.question;
+
+    shuffledAnswers = shuffle([...q.answers]);
+
+    document.getElementById('answer-btn-1').textContent = shuffledAnswers[0];
+    document.getElementById('answer-btn-2').textContent = shuffledAnswers[1];
+
+    document.getElementById('answer-btn-1').disabled = false;
+    document.getElementById('answer-btn-2').disabled = false;
+  }
+
+  function handleAnswer(index) {
+    const selectedAnswer = shuffledAnswers[index];
+    const correctAnswer = questions[currentQuestionIndex].answers[0];
+
+    if(selectedAnswer === correctAnswer){
+      currentQuestionIndex++;
+      if(currentQuestionIndex >= questions.length){
+        showLoveLetter();
+      } else {
+        showQuestion();
+      }
+    } else {
+      const cryingKuromi = document.getElementById('crying-kuromi');
+      cryingKuromi.classList.remove('hidden');
+      document.getElementById('answer-btn-1').disabled = true;
+      document.getElementById('answer-btn-2').disabled = true;
+
+      setTimeout(() => {
+        cryingKuromi.classList.add('hidden');
+        document.getElementById('answer-btn-1').disabled = false;
+        document.getElementById('answer-btn-2').disabled = false;
+      }, 2500);
+    }
+  }
+
+  function showLoveLetter() {
+    document.getElementById('quiz-container').classList.add('hidden');
+    document.getElementById('love-letter-screen').classList.remove('hidden');
+
+    const letterText = `It’s been 3 years since I started liking you and a year since we started dating, babe. Time passed real quick with us.
+
+In the first year, we made a lot of memories. Sometimes I made you mad, cry, or want to leave me, but after every drama, we’re still here — and I believe we will always be together like this in the coming days too.
+
+I don’t want you to leave, never. I was sure I wanted to commit to you from the very first day, and since I’m with you now, I can’t imagine losing you, Kanchi.
+
+Days might get rough sometimes. We might lose our minds and argue, but remember, Roshan loves you tons — always.
+
+I love you, babe. I love you so much. I wanna marry you someday.
+
+Roshan loves you tonsssssssss!
+
+With love,
+Roshan Don ❤️`;
+
+    document.getElementById('love-letter-text').textContent = letterText;
+  }
+</script>
+
+</body>
+</html>
